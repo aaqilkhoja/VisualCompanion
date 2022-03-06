@@ -2,10 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ocrtexttospeech">
 
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,40 +11,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.OCRTextToSpeech">
-
-        <activity
-            android:name=".objectDetection.DetectorActivity"
-            android:screenOrientation="portrait"
-            android:exported="true">
-
-        </activity>
-        <activity
-            android:name=".CurrencyDetection"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".welcome.WelcomePage"
-            android:exported="true"></activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
-
-            <!--
-            intent-filter>
+            <!--intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter
-            -->
+            </intent-filter-->
         </activity>
+
         <activity
             android:name=".FrontPage"
-            android:exported="true">
+            android:exported="true" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
+
     </application>
 
 </manifest>
