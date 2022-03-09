@@ -62,19 +62,94 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
                 };
         tts = new TextToSpeech(this.getApplicationContext(),listener);
 
-
-        currency_button.setOnTouchListener(new View.OnTouchListener() {
+        currency_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // gDetector.onTouchEvent()
+            public void onClick(View v) {
                 tts.speak("Currency Detection", TextToSpeech.QUEUE_FLUSH, null, null);
-             //   gDetector.onTouchEvent(event);
+                //gDetector.onTouchEvent(event);
+               // return true;
+            }
+        });
+
+        currency_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+               Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
+               return true;
+            }
+        });
+
+
+
+        ocr_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tts.speak("OCR", TextToSpeech.QUEUE_FLUSH, null, null);
+                //gDetector.onTouchEvent(event);
+                // return true;
+            }
+        });
+
+        ocr_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(FrontPage.this, MainActivity.class);
+                startActivity(intent);
+
+
                 return true;
             }
         });
 
 
-        ocr_button.setOnTouchListener(new View.OnTouchListener() {
+        object_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tts.speak("Object detection", TextToSpeech.QUEUE_FLUSH, null, null);
+                //gDetector.onTouchEvent(event);
+                // return true;
+            }
+        });
+
+        object_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(FrontPage.this, "Object long press clicked", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
+
+
+        fourth_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tts.speak("Miscellanious button", TextToSpeech.QUEUE_FLUSH, null, null);
+                //gDetector.onTouchEvent(event);
+                // return true;
+            }
+        });
+
+        fourth_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(FrontPage.this, "4th button clicked", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
+
+      /*  currency_button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // gDetector.onTouchEvent()
+                tts.speak("Currency Detection", TextToSpeech.QUEUE_FLUSH, null, null);
+                gDetector.onTouchEvent(event);
+                return true;
+            }
+        });*/
+
+
+       /* ocr_button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // gDetector.onTouchEvent()
@@ -82,7 +157,8 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
               //  gDetector.onTouchEvent(event);
                 return true;
             }
-        });
+        });*/
+/*
 
        object_button.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -103,6 +179,7 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
                 return true;
             }
         });
+*/
 
        // View linearLayoutTouch = (LinearLayout) findViewById(R.id.swipe_main);
 
@@ -122,39 +199,6 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
       //  frontPageTouch.setOnTouchListener(new OnSwipeTouchListener (FrontPage.this));
 
     }
-
-    /*public boolean OnTouchEvent(MotionEvent event){
-        switch(event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                x1=event.getX();
-                y1=event.getY();
-                break;
-
-            case MotionEvent.ACTION_UP:
-                x2=event.getX();
-                y2=event.getY();
-
-                if(x1<x2){
-                    //swipe left
-                    Intent intent = new Intent(FrontPage.this, MainActivity.class);
-                    startActivity(intent);
-                    Toast.makeText(FrontPage.this, "Left", Toast.LENGTH_SHORT).show();
-                }
-                else if(x2>x1){
-                    //swipe right
-                    Toast.makeText(FrontPage.this, "Right", Toast.LENGTH_SHORT).show();
-
-                }*/
-
-               // if(y1<y2){
-                    //swipe up
-                 //   Toast.makeText(FrontPage.this, "Up", Toast.LENGTH_SHORT).show();
-               // }
-
-                //if(y2>y1){
-                    //swipe down
-                 //   Toast.makeText(FrontPage.this, "Down", Toast.LENGTH_SHORT).show();
-               // }
 
 
 
