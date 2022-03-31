@@ -311,6 +311,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         {
             tts.stop();
             cameraSource.stop();
+
+            tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
+
             Intent intent = new Intent(MainActivity.this, FrontPage.class);
               startActivity(intent);
 

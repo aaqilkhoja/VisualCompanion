@@ -1,8 +1,11 @@
 package com.example.ocrtexttospeech;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -18,6 +21,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import com.example.ocrtexttospeech.objectDetection.DetectorActivity;
+import com.example.ocrtexttospeech.welcome.WelcomePage;
 
 import java.util.Locale;
 
@@ -38,7 +44,7 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
 
 
     @Override
-    public void onCreate( Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frontpage);
         currency_button = (Button) findViewById(R.id.currency_detection_button);
@@ -47,38 +53,58 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
         fourth_button = (Button) findViewById(R.id.misc_button);
 
 
+        SharedPreferences mPrefs = this.getPreferences(this.MODE_PRIVATE);
+        int defaultValue = 0;
+        int introPage = mPrefs.getInt("IntroPage", defaultValue);
+
+
+        Log.d("INTRO PAGE LOG", "Intro Page: " + introPage);
+
+        if (introPage == 0) {
+            SharedPreferences.Editor editor = mPrefs.edit();
+            editor.putInt("IntroPage", 1);
+            editor.apply();
+
+            startActivity(new Intent(FrontPage.this, WelcomePage.class));
+        }
+
+
+//        if(!mPrefs.getAll().containsKey("IntroPage")){
+//            startActivity(new Intent(FrontPage.this, WelcomePage.class));
+//        }
+
 
         TextToSpeech.OnInitListener listener =
                 new TextToSpeech.OnInitListener() {
                     @Override
                     public void onInit(final int status) {
-                        if(status==TextToSpeech.SUCCESS) {
+                        if (status == TextToSpeech.SUCCESS) {
                             Log.d("TTS", "Text to Speech Engine started successfully.");
                             tts.setLanguage(Locale.US);
-                        }else{
+                        } else {
                             Log.d("TTS", "Error starting text to speech engine.");
                         }
                     }
                 };
-        tts = new TextToSpeech(this.getApplicationContext(),listener);
+        tts = new TextToSpeech(this.getApplicationContext(), listener);
 
         currency_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tts.speak("Currency Detection", TextToSpeech.QUEUE_FLUSH, null, null);
                 //gDetector.onTouchEvent(event);
-               // return true;
+                // return true;
             }
         });
 
         currency_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-               Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
-               return true;
+                Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(FrontPage.this, CurrencyDetection.class));
+                return true;
             }
         });
-
 
 
         ocr_button.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +141,7 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
         object_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                startActivity(new Intent(FrontPage.this, DetectorActivity.class));
                 Toast.makeText(FrontPage.this, "Object long press clicked", Toast.LENGTH_LONG).show();
                 return true;
             }
@@ -181,28 +208,24 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
         });
 */
 
-       // View linearLayoutTouch = (LinearLayout) findViewById(R.id.swipe_main);
+        // View linearLayoutTouch = (LinearLayout) findViewById(R.id.swipe_main);
 
-    //
+        //
         //   gDetector = new GestureDetector(this,this);
 
-     //   linearLayoutTouch.setOnTouchListener(new View.OnTouchListener() {
-     //       @Override
-    //        public boolean onTouch(View v, MotionEvent event) {
+        //   linearLayoutTouch.setOnTouchListener(new View.OnTouchListener() {
+        //       @Override
+        //        public boolean onTouch(View v, MotionEvent event) {
 
-    //            gDetector.onTouchEvent(event);
-    //            return true;
-    //        }
-    //    });
+        //            gDetector.onTouchEvent(event);
+        //            return true;
+        //        }
+        //    });
 
         //View frontPageTouch = (LinearLayout) findViewById(R.id.swipe_main);
-      //  frontPageTouch.setOnTouchListener(new OnSwipeTouchListener (FrontPage.this));
+        //  frontPageTouch.setOnTouchListener(new OnSwipeTouchListener (FrontPage.this));
 
     }
-
-
-
-
 
 
     @Override
@@ -233,11 +256,11 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
-      //  if(e1.getX()<e2.getX())
-      //  {
-      //      Intent intent = new Intent(FrontPage.this, MainActivity.class);
-      //      startActivity(intent);
-      //  }
+        //  if(e1.getX()<e2.getX())
+        //  {
+        //      Intent intent = new Intent(FrontPage.this, MainActivity.class);
+        //      startActivity(intent);
+        //  }
 
 
         return false;
