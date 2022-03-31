@@ -97,10 +97,10 @@ public class WelcomePage extends AppCompatActivity {
                     }
                 };
 
-        tts = new TextToSpeech(this, listener);*/
+        tts = new TextToSpeech(this, listener);
 
 
-        tts.speak("Welcome to the Visual Companion app. This app will help you navigate through your daily life by utilizing the capabilities of this application. To navigate to the next page, please swipe to the right.", TextToSpeech.QUEUE_ADD, null, null);
+        //tts.speak("Welcome to the Visual Companion app!", TextToSpeech.QUEUE_ADD, null, null);
 
 
 
