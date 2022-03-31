@@ -138,18 +138,18 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
             public void onClick(View v) {
                 tts.speak("Currency Detection", TextToSpeech.QUEUE_FLUSH, null, null);
                 //gDetector.onTouchEvent(event);
-               // return true;
+                // return true;
             }
         });
 
         currency_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-               Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
-               return true;
+                Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(FrontPage.this, CurrencyDetection.class));
+                return true;
             }
         });
-
 
 
         ocr_button.setOnClickListener(new View.OnClickListener() {
