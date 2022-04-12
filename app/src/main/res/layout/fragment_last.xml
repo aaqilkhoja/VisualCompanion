@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/finish"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
@@ -9,16 +11,18 @@
         android:id="@+id/title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome Page"
-        android:textSize="@dimen/welcome_page_text_size"
         android:layout_marginBottom="10dp"
-         />
+        android:textSize="@dimen/welcome_page_text_size" />
+
     <TextView
         android:id="@+id/instructions_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="40dp"
-        android:textSize="@dimen/welcome_page_text_size"
-        android:text="@string/firstPage" />
+        android:text="@string/firstPage"
+        android:textSize="@dimen/welcome_page_text_size" />
+
 
 </LinearLayout>
+
+

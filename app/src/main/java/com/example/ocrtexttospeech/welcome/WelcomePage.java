@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
@@ -54,6 +55,9 @@ public class WelcomePage extends AppCompatActivity {
         stateAdapter.addFragment(new FirstFragment());
         stateAdapter.addFragment(new SecondFragment());
         stateAdapter.addFragment(new ThirdFragment());
+        stateAdapter.addFragment(new FourthFragment());
+        stateAdapter.addFragment(new FifthFragment());
+        stateAdapter.addFragment(new LastFragment());
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -80,16 +84,18 @@ public class WelcomePage extends AppCompatActivity {
                         }
                     }
                 };
-
         tts = new TextToSpeech(this, listener);
-
-
-        //tts.speak("Welcome to the Visual Companion app!", TextToSpeech.QUEUE_ADD, null, null);
-
-
 
         // Set the adapter onto
         // the view pager
         viewPager.setAdapter(stateAdapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+
     }
 }
