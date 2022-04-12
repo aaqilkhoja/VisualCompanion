@@ -60,7 +60,7 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
 
         Log.d("INTRO PAGE LOG", "Intro Page: " + introPage);
 
-        if (introPage == 0 || true) {
+        if (introPage == 0 ) {
             SharedPreferences.Editor editor = mPrefs.edit();
             editor.putInt("IntroPage", 1);
             editor.apply();
