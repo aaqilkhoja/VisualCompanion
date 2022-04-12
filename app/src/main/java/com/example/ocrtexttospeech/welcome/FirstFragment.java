@@ -1,0 +1,97 @@
+package com.example.ocrtexttospeech.welcome;
+
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.example.ocrtexttospeech.R;
+
+import java.util.Locale;
+
+public class FirstFragment extends Fragment {
+
+    public FirstFragment() {
+        // Required empty public constructor
+    }
+
+    TextToSpeech tts;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        TextToSpeech.OnInitListener listener =
+                new TextToSpeech.OnInitListener() {
+                    @Override
+                    public void onInit(final int status) {
+                        if(status==TextToSpeech.SUCCESS) {
+                            Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
+                            tts.setLanguage(Locale.US);
+                        }else{
+                            Log.d("TTS Intro Page", "Error starting text to speech engine.");
+                        }
+                    }
+                };
+
+        tts = new TextToSpeech(getActivity(), listener);
+
+        tts.speak("Welcome to the Visual Companion app. This app will help you navigate through your daily life by utilizing the capabilities of this application. To navigate to the next page, please swipe to the right.", TextToSpeech.QUEUE_ADD, null, null);
+    }
+
+    @Override
+    public View onCreateView(
+            LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(
+                R.layout.fragment_first,
+                container, false);
+
+//        TextToSpeech.OnInitListener listener =
+//                new TextToSpeech.OnInitListener() {
+//                    @Override
+//                    public void onInit(final int status) {
+//                        if(status==TextToSpeech.SUCCESS) {
+//                            Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
+//                            tts.setLanguage(Locale.US);
+//                        }else{
+//                            Log.d("TTS Intro Page", "Error starting text to speech engine.");
+//                        }
+//                    }
+//                };
+
+//        tts = new TextToSpeech(getActivity(), listener);
+//
+//        Button btn = view.findViewById(R.id.button);
+//        tts.speak("Welcome to the Visual Companion app!", TextToSpeech.QUEUE_ADD, null, null);
+
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                tts.speak("Welcome to the Visual Companion app!", TextToSpeech.QUEUE_ADD, null, null);
+//
+//            }
+//        });
+
+       //    if(this.isVisible())
+         //    tts.speak("Welcome to the Visual Companion app. This app will help you navigate through your daily life by utilizing the capabilities of this application. To navigate to the next page, please swipe to the right.", TextToSpeech.QUEUE_ADD, null, null);
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(this.isVisible())
+            tts.speak("Welcome to the Visual Companion app. This app will help you navigate through your daily life by utilizing the capabilities of this application. To navigate to the next page, please swipe to the right.", TextToSpeech.QUEUE_ADD, null, null);
+
+    }
+}

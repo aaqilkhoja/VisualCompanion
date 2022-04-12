@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context=".FrontPage"
+    android:id="@+id/swipe_main">
+   <!-- android:id="@+id/swipe_main"-->
+
+
+    <!--TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/-->
+       <!-- android:text="Welcome to Visual Companion. This application is built to help you out with visual impairments. To access the OCR Text to Speech function, swipe left.
+To access object detection, swipe up. To detect currency detection, swipe right. To exit from the app, swipe down."
+        /-->
+
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_weight="1"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/text_to_speech_button"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:text="Optical Character Recognition"
+        android:textSize="22dp"
+        tools:ignore="MissingConstraints"
+        />
+
+    <Button
+        android:id="@+id/currency_detection_button"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:text="Currency Detection"
+        android:textSize="22dp"
+        tools:ignore="MissingConstraints" />
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/object_detection_button"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:text="Object Detection"
+        android:textSize="22dp"
+
+        tools:ignore="MissingConstraints"
+        />
+
+    <Button
+        android:id="@+id/misc_button"
+        android:text="Introduction Button"
+        android:textSize="20dp"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:layout_weight="1"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="365dp" />
+    </LinearLayout>
+</LinearLayout>
