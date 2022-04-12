@@ -65,9 +65,6 @@ public class FirstFragment extends Fragment {
             }
         }, 1000);
 
-        TextView tvInst = view.findViewById(R.id.instructions_tv);
-        tvInst.setText(getString(R.string.firstPageString));
-
 
         TextView tvInst = view.findViewById(R.id.instructions_tv);
         tvInst.setText(getString(R.string.firstPageString));

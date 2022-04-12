@@ -30,18 +30,17 @@ public class WelcomePage extends AppCompatActivity {
 
     @Override
     protected void onCreate(
-            Bundle savedInstanceState)
-    {
+            Bundle savedInstanceState) {
 
 
         TextToSpeech.OnInitListener listener =
                 new TextToSpeech.OnInitListener() {
                     @Override
                     public void onInit(final int status) {
-                        if(status==TextToSpeech.SUCCESS) {
+                        if (status == TextToSpeech.SUCCESS) {
                             Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
                             tts.setLanguage(Locale.US);
-                        }else{
+                        } else {
                             Log.d("TTS Intro Page", "Error starting text to speech engine.");
                         }
                     }
@@ -84,22 +83,17 @@ public class WelcomePage extends AppCompatActivity {
 
         Log.d("INTRO PAGE LOG 2", "Intro Page: " + introPage);
 
-
-
-        ///
-
-       /* TextToSpeech.OnInitListener listener =
-                new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(final int status) {
-                        if(status==TextToSpeech.SUCCESS) {
-                            Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
-                            tts.setLanguage(Locale.US);
-                        }else{
-                            Log.d("TTS Intro Page", "Error starting text to speech engine.");
-                        }
-                    }
-                };
+        listener = new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(final int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
+                    tts.setLanguage(Locale.US);
+                } else {
+                    Log.d("TTS Intro Page", "Error starting text to speech engine.");
+                }
+            }
+        };
         tts = new TextToSpeech(this, listener);
 
         // Set the adapter onto

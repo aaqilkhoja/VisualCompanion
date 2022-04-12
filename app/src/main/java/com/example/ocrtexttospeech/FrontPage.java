@@ -1,5 +1,4 @@
 package com.example.ocrtexttospeech;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -64,7 +63,7 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
 
         Log.d("INTRO PAGE LOG", "Intro Page: " + introPage);
 
-        if (introPage == 0 || true) {
+        if (introPage == 0) {
             SharedPreferences.Editor editor = mPrefs.edit();
             editor.putInt("IntroPage", 1);
             editor.apply();
@@ -133,41 +132,6 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
                 Intent intent = new Intent(FrontPage.this, MainActivity.class);
                 startActivity(intent);
 
-        currency_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tts.speak("Currency Detection", TextToSpeech.QUEUE_FLUSH, null, null);
-                //gDetector.onTouchEvent(event);
-                // return true;
-            }
-        });
-
-        currency_button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(FrontPage.this, CurrencyDetection.class));
-                return true;
-            }
-        });
-
-
-        ocr_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tts.speak("OCR", TextToSpeech.QUEUE_FLUSH, null, null);
-                //gDetector.onTouchEvent(event);
-                // return true;
-            }
-        });
-
-        ocr_button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(FrontPage.this, MainActivity.class);
-                startActivity(intent);
-
 
                 return true;
             }
@@ -207,7 +171,7 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
             public boolean onLongClick(View v) {
                 vibrateNow(1000);
                 Toast.makeText(FrontPage.this, "Introduction Button Clicked", Toast.LENGTH_LONG).show();
-               startActivity(new Intent(FrontPage.this, WelcomePage.class));
+                startActivity(new Intent(FrontPage.this, WelcomePage.class));
                 return true;
             }
         });
@@ -233,7 +197,6 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
             }
         });*/
 /*
-
        object_button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -243,7 +206,6 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
                 return true;
             }
         });
-
         fourth_button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
