@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.ocrtexttospeech.R;
 
@@ -54,8 +55,16 @@ public class SecondFragment extends Fragment {
         super.onResume();
 
         if(this.isVisible())
-            tts.speak("bruh!", TextToSpeech.QUEUE_ADD, null, null);
+            tts.speak(getString(R.string.front_page_intro_string), TextToSpeech.QUEUE_ADD, null, null);
+        else{
+            tts.stop();
+        }
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        tts.stop();
     }
 
     @Override
@@ -64,9 +73,18 @@ public class SecondFragment extends Fragment {
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        return inflater
+        View view = inflater
                 .inflate(
-                        R.layout.fragment_second,
+                        R.layout.fragment_first,
                         container, false);
+
+        TextView tvTitle = view.findViewById(R.id.title_tv);
+        TextView tvInstructions = view.findViewById(R.id.instructions_tv);
+
+        tvTitle.setText(R.string.front_page_intro_title);
+        tvInstructions.setText(getString(R.string.front_page_intro_string));
+
+
+        return view;
     }
 }

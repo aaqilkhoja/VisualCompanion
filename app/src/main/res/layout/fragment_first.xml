@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".welcome.FirstFragment">
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="32dp"
-        android:text="@string/firstPage" />
-
-    <Button
-        android:id="@+id/button"
+        android:id="@+id/title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:text="Welcome Page"
+        android:textSize="@dimen/welcome_page_text_size"
+        android:layout_marginBottom="10dp"
+         />
+    <TextView
+        android:id="@+id/instructions_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="40dp"
+        android:textSize="@dimen/welcome_page_text_size"
+        android:text="@string/firstPage" />
 
-</FrameLayout>
+</LinearLayout>
