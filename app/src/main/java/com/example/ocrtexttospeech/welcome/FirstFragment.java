@@ -44,8 +44,6 @@ public class FirstFragment extends Fragment {
                 };
 
         tts = new TextToSpeech(getActivity(), listener);
-
-        tts.speak("Welcome to the Visual Companion app. This app will help you navigate through your daily life by utilizing the capabilities of this application. To navigate to the next page, please swipe to the right.", TextToSpeech.QUEUE_ADD, null, null);
     }
 
     @Override
@@ -71,6 +69,10 @@ public class FirstFragment extends Fragment {
         tvInst.setText(getString(R.string.firstPageString));
 
 
+        TextView tvInst = view.findViewById(R.id.instructions_tv);
+        tvInst.setText(getString(R.string.firstPageString));
+
+
        //    if(this.isVisible())
          //    tts.speak("Welcome to the Visual Companion app. This app will help you navigate through your daily life by utilizing the capabilities of this application. To navigate to the next page, please swipe to the right.", TextToSpeech.QUEUE_ADD, null, null);
         return view;
@@ -80,7 +82,8 @@ public class FirstFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if(this.isVisible())
-            tts.speak("Welcome to the Visual Companion app. This app will help you navigate through your daily life by utilizing the capabilities of this application. To navigate to the next page, please swipe to the right.", TextToSpeech.QUEUE_ADD, null, null);
+            tts.speak("Welcome to the Visual Companion app!", TextToSpeech.QUEUE_ADD, null, null);
+    }
 
     @Override
     public void onPause() {
