@@ -4,8 +4,8 @@
 4
 5    <uses-sdk
 6        android:minSdkVersion="21"
-6-->/Users/androiddeveloper/Documents/GitHub/VisualCompanion/lib_task_api/src/main/AndroidManifest.xml
+6-->/Users/aaqil/Downloads/VisualCompanion-master/lib_task_api/src/main/AndroidManifest.xml
 7        android:targetSdkVersion="30" />
-7-->/Users/androiddeveloper/Documents/GitHub/VisualCompanion/lib_task_api/src/main/AndroidManifest.xml
+7-->/Users/aaqil/Downloads/VisualCompanion-master/lib_task_api/src/main/AndroidManifest.xml
 8
 9</manifest>

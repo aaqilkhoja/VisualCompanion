@@ -63,8 +63,8 @@ To access object detection, swipe up. To detect currency detection, swipe right.
 
     <Button
         android:id="@+id/misc_button"
-        android:text="Misc."
-        android:textSize="22dp"
+        android:text="Introduction Button"
+        android:textSize="20dp"
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
         android:layout_weight="1"

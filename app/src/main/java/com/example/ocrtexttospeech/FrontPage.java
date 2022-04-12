@@ -3,12 +3,16 @@ package com.example.ocrtexttospeech;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -60,7 +64,7 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
 
         Log.d("INTRO PAGE LOG", "Intro Page: " + introPage);
 
-        if (introPage == 0 ) {
+        if (introPage == 0) {
             SharedPreferences.Editor editor = mPrefs.edit();
             editor.putInt("IntroPage", 1);
             editor.apply();
@@ -97,9 +101,12 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
             }
         });
 
+
+
         currency_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(FrontPage.this, CurrencyDetection.class));
                 return true;
@@ -113,13 +120,16 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
                 tts.speak("OCR", TextToSpeech.QUEUE_FLUSH, null, null);
                 //gDetector.onTouchEvent(event);
                 // return true;
+
             }
         });
 
         ocr_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+
                 Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
+
                 Intent intent = new Intent(FrontPage.this, MainActivity.class);
                 startActivity(intent);
 
@@ -151,7 +161,7 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
         fourth_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tts.speak("Miscellanious button", TextToSpeech.QUEUE_FLUSH, null, null);
+                tts.speak("Hear the Introduction Again", TextToSpeech.QUEUE_FLUSH, null, null);
                 //gDetector.onTouchEvent(event);
                 // return true;
             }
@@ -160,7 +170,9 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
         fourth_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(FrontPage.this, "4th button clicked", Toast.LENGTH_LONG).show();
+                vibrateNow(1000);
+                Toast.makeText(FrontPage.this, "Introduction Button Clicked", Toast.LENGTH_LONG).show();
+               startActivity(new Intent(FrontPage.this, WelcomePage.class));
                 return true;
             }
         });
@@ -264,5 +276,24 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
 
 
         return false;
+    }
+
+    public void vibratePulse(){
+        long [] pattern = {0,100,200,100,200,100};
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(pattern, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
+        else{
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(pattern,-1);
+        }
+    }
+
+    public void vibrateNow(long millis){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
+        else{
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(millis);
+        }
     }
 }

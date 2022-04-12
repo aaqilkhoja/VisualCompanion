@@ -8,7 +8,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.SparseArray;
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     Button button1;
     Button button_stop;
     String sentence;
+   // private Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+
 
     final int RequestCameraPermission = 1001;
     private GestureDetector gDetector;
@@ -67,11 +72,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        vibratePulse();
         gDetector = new GestureDetector(this,this);
 
-        //  button1 = (Button) findViewById(R.id.buttonForText);
-       // button_stop = (Button) findViewById(R.id.stop_button);
         cameraView = findViewById(R.id.surfaceView);
         textView = findViewById(R.id.text_View);
 
@@ -312,6 +315,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             tts.stop();
             cameraSource.stop();
 
+           vibratePulse();
+
             tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
 
             Intent intent = new Intent(MainActivity.this, FrontPage.class);
@@ -320,6 +325,33 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
 
         return false;
+    }
+    @Override
+    public void onBackPressed(){
+        tts.stop();
+        cameraSource.stop();
+       vibratePulse();
+        tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
+        this.finish();
+    }
+
+    public void vibratePulse(){
+        long [] pattern = {0,100,200,100,200,100};
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(pattern, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
+        else{
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(pattern,-1);
+        }
+    }
+
+    public void vibrateNow(long millis){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
+        else{
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(millis);
+        }
     }
 }
 

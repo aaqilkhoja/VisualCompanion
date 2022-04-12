@@ -13,7 +13,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +31,22 @@ public class WelcomePage extends AppCompatActivity {
     protected void onCreate(
             Bundle savedInstanceState)
     {
+
+
+        TextToSpeech.OnInitListener listener =
+                new TextToSpeech.OnInitListener() {
+                    @Override
+                    public void onInit(final int status) {
+                        if(status==TextToSpeech.SUCCESS) {
+                            Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
+                            tts.setLanguage(Locale.US);
+                        }else{
+                            Log.d("TTS Intro Page", "Error starting text to speech engine.");
+                        }
+                    }
+                };
+
+        tts = new TextToSpeech(this, listener);
         super.onCreate(savedInstanceState);
 
         // Set the content of the activity
@@ -55,9 +70,6 @@ public class WelcomePage extends AppCompatActivity {
         stateAdapter.addFragment(new FirstFragment());
         stateAdapter.addFragment(new SecondFragment());
         stateAdapter.addFragment(new ThirdFragment());
-        stateAdapter.addFragment(new FourthFragment());
-        stateAdapter.addFragment(new FifthFragment());
-        stateAdapter.addFragment(new LastFragment());
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -72,7 +84,7 @@ public class WelcomePage extends AppCompatActivity {
 
         ///
 
-        TextToSpeech.OnInitListener listener =
+       /* TextToSpeech.OnInitListener listener =
                 new TextToSpeech.OnInitListener() {
                     @Override
                     public void onInit(final int status) {
@@ -84,18 +96,16 @@ public class WelcomePage extends AppCompatActivity {
                         }
                     }
                 };
-        tts = new TextToSpeech(this, listener);
+
+        tts = new TextToSpeech(this, listener);*/
+
+
+        tts.speak("Welcome to the Visual Companion app. This app will help you navigate through your daily life by utilizing the capabilities of this application. To navigate to the next page, please swipe to the right.", TextToSpeech.QUEUE_ADD, null, null);
+
+
 
         // Set the adapter onto
         // the view pager
         viewPager.setAdapter(stateAdapter);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
-
     }
 }

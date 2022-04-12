@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -165,5 +167,24 @@ public class CurrencyDetection extends AppCompatActivity {
             tts.shutdown();
         }
         super.onPause();
+    }
+
+    public void vibratePulse(){
+        long [] pattern = {0,100,200,100,200,100};
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(pattern, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
+        else{
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(pattern,-1);
+        }
+    }
+
+    public void vibrateNow(long millis){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
+        else{
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(millis);
+        }
     }
 }

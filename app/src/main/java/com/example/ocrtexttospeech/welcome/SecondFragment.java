@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.example.ocrtexttospeech.R;
 
@@ -45,7 +44,8 @@ public class SecondFragment extends Fragment {
 
         tts = new TextToSpeech(getActivity(), listener);
 
-        tts.speak("Welcome to the Visual Companion app!", TextToSpeech.QUEUE_ADD, null, null);
+        tts.speak("Welc" +
+                "", TextToSpeech.QUEUE_ADD, null, null);
     }
 
 
@@ -54,16 +54,8 @@ public class SecondFragment extends Fragment {
         super.onResume();
 
         if(this.isVisible())
-            tts.speak(getString(R.string.front_page_intro_string), TextToSpeech.QUEUE_ADD, null, null);
-        else{
-            tts.stop();
-        }
-    }
+            tts.speak("bruh!", TextToSpeech.QUEUE_ADD, null, null);
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        tts.stop();
     }
 
     @Override
@@ -72,18 +64,9 @@ public class SecondFragment extends Fragment {
             ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater
+        return inflater
                 .inflate(
-                        R.layout.fragment_first,
+                        R.layout.fragment_second,
                         container, false);
-
-        TextView tvTitle = view.findViewById(R.id.title_tv);
-        TextView tvInstructions = view.findViewById(R.id.instructions_tv);
-
-        tvTitle.setText(R.string.front_page_intro_title);
-        tvInstructions.setText(getString(R.string.front_page_intro_string));
-
-
-        return view;
     }
 }
