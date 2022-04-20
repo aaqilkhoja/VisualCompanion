@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Visual Companion</string>
+
+    <string name="firstPage">First Instruction Page</string>
+    <string name="secondPage">Second Instruction Page</string>
+    <string name="thirdPage">Third Instruction Page</string>
+    <string name="tfe_od_app_name" translation_description="Object Detection demo app [CHAR_LIMIT=40]">TFL Detect</string>
+    <string name="tfe_od_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device does not support Camera2 API.</string>
+    <string name="firstPageString">Welcome to the Visual Companion app.This app will help you navigate through your daily life by utilizing the capabilities of this application.\n\nTo navigate to the next page, please swipe to the right.</string>
+    <string name="front_page_intro_string">The front page features 4 buttons. Each button has a different functionality. To hear the functionality of each button, " click on the button once. To navigate to that functionality, press and hold the button. To navigate to the main page from the functionality, swipe down to up. This will vibrate your device for 1 second, to let you know, as well as tell you that you are navigating back to the front page.\n\nTo navigate to the next page in this introduction, please swipe to the right.</string>
+    <string name="front_page_intro_title">Front Page Instructions</string>
+    <string name="last_page_intro_title">End Tutorial</string>
+    <string name="ocr_intro_title">OCR Instructions</string>
+    <string name="currency_detection_intro_title">Currency Detection Instructions</string>
+    <string name="object_detection_intro_title">Object Detection Instructions</string>
+
+
+    <string name="ocr_intro_page_instructions">The first feature is Optical Character Recognition. To ues it …</string>
+    <string name="currency_detection_intro_page_instructions">The second feature is Currency Detection. To ues it …</string>
+    <string name="object_detection_intro_page_instructions">Object detection function. To use this feature, press and hold the object detection button on the main page. Once you\'re on the Object Detection page, tap anywhere on the screen. The application will detect objects in the immediate vicinity of the camera and inform you about these objects and their location. \n\nTo go to the front page, swipe up.</string>
+    <string name="last_page_intro_instructions">To finish this tutorial, press anywhere on the screen. This will take you to the main page of the application that consists of all the mentioned functionalities.</string>
+</resources>
