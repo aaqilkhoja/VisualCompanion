@@ -12,8 +12,11 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +35,7 @@ public class WelcomePage extends AppCompatActivity {
     protected void onCreate(
             Bundle savedInstanceState) {
 
-
+    vibrateNow(1000);
         TextToSpeech.OnInitListener listener =
                 new TextToSpeech.OnInitListener() {
                     @Override
@@ -107,5 +110,32 @@ public class WelcomePage extends AppCompatActivity {
 
 
 
+    }
+    public void vibratePulse(){
+        long [] pattern = {0,100,200,100,200,100};
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(pattern, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
+        else{
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(pattern,-1);
+        }
+    }
+
+    public void vibrateNow(long millis){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE));
+        }
+        else{
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(millis);
+        }
+    }
+
+    @Override
+    public void onBackPressed(){
+        tts.stop();
+        // cameraSource.stop();
+        vibratePulse();
+        tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
+        this.finish();
     }
 }

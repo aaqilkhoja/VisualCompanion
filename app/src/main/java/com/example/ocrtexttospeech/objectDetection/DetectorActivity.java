@@ -26,7 +26,11 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Build;
 import android.os.SystemClock;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.speech.tts.TextToSpeech;
 import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
@@ -178,6 +182,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         new Runnable() {
           @Override
           public void run() {
+            vibrateNow(1000);
             LOGGER.i("Running detection on image " + currTimestamp);
             final long startTime = SystemClock.uptimeMillis();
             final List<Detector.Recognition> results = detector.recognizeImage(croppedBitmap);
@@ -267,5 +272,33 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   @Override
   protected void setNumThreads(final int numThreads) {
     runInBackground(() -> detector.setNumThreads(numThreads));
+  }
+
+  public void vibratePulse(){
+    long [] pattern = {0,100,200,100,200,100};
+    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+      ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(pattern, VibrationEffect.DEFAULT_AMPLITUDE));
+    }
+    else{
+      ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(pattern,-1);
+    }
+  }
+
+  public void vibrateNow(long millis){
+    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+      ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE));
+    }
+    else{
+      ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(millis);
+    }
+  }
+
+  @Override
+  public void onBackPressed(){
+  //  tts.stop();
+    // cameraSource.stop();
+    vibratePulse();
+  //  tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
+    this.finish();
   }
 }

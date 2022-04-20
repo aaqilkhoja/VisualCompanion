@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        vibratePulse();
+        vibrateNow(1000);
         gDetector = new GestureDetector(this,this);
 
         cameraView = findViewById(R.id.surfaceView);

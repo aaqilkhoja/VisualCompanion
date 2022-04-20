@@ -43,6 +43,7 @@ public class CurrencyDetection extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        vibrateNow(1000);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_currency_detection);
 
