@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">OCRTextToSpeech</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="firstPage">First Instruction Page</string>
+    <string name="secondPage">Second Instruction Page</string>
+    <string name="thirdPage">Third Instruction Page</string>
+    <string name="tfe_od_app_name" translation_description="Object Detection demo app [CHAR_LIMIT=40]">TFL Detect</string>
+    <string name="tfe_od_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
+</resources>
