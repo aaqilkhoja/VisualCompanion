@@ -87,6 +87,7 @@ public class CurrencyDetectionTwo extends AppCompatActivity implements View.OnTo
         imageView = findViewById(R.id.imageView);
 
 
+        values.put("Zero", 0.00);
         values.put("Hundred", 100.00);
         values.put("Fifty", 50.00);
         values.put("Twenty", 20.00);
@@ -214,10 +215,20 @@ public class CurrencyDetectionTwo extends AppCompatActivity implements View.OnTo
                     maxConfidence = confidences[i];
                     maxPos = i;
                 }
+
+                Log.i("CurrencyConfidence:", confidences[i] + ", i=" + i );
             }
+            String finalAnswer;
             String[] classes = {"Hundred", "Fifty", "Twenty", "Ten", "Five", "Two", "One"};
-            String finalAnswer = classes[maxPos];
+            if(maxConfidence > 0.7) {
+                finalAnswer = classes[maxPos];
+            }
+            else{
+                finalAnswer = "Zero";
+            }
+
             System.out.println("Final Answer: " + finalAnswer);
+
 
             if (values.containsKey(finalAnswer))
                 totalAnswer += values.get(finalAnswer);
