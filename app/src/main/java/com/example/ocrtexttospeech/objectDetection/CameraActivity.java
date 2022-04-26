@@ -19,6 +19,7 @@ package com.example.ocrtexttospeech.objectDetection;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
@@ -34,7 +35,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Trace;
+import android.speech.tts.TextToSpeech;
 import android.util.Size;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -53,6 +57,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import com.example.ocrtexttospeech.FrontPage;
 import com.example.ocrtexttospeech.R;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
@@ -65,7 +70,7 @@ public abstract class CameraActivity extends AppCompatActivity
     implements OnImageAvailableListener,
         Camera.PreviewCallback,
         CompoundButton.OnCheckedChangeListener,
-        View.OnClickListener {
+        View.OnClickListener , View.OnTouchListener, GestureDetector.OnGestureListener {
   private static final Logger LOGGER = new Logger();
 
   private static final int PERMISSIONS_REQUEST = 1;
@@ -102,7 +107,7 @@ public abstract class CameraActivity extends AppCompatActivity
   Toolbar toolbar;
 
   CoordinatorLayout mCoordinatorLayout;
-
+  GestureDetector gDetector;
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     LOGGER.d("onCreate " + this);
@@ -133,6 +138,16 @@ public abstract class CameraActivity extends AppCompatActivity
     mRelativeView = findViewById(R.id.relativeContainer);
 
     mButtonDetect = findViewById(R.id.detector_btn);
+    gDetector = new GestureDetector(this,this);
+
+
+    mButtonDetect.setOnTouchListener(new View.OnTouchListener() {
+      @Override
+      public boolean onTouch(View view, MotionEvent motionEvent) {
+        gDetector.onTouchEvent(motionEvent);
+        return true;
+      }
+    });
 
 
     ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
@@ -196,6 +211,58 @@ public abstract class CameraActivity extends AppCompatActivity
     imageConverter.run();
     return rgbBytes;
   }
+
+
+  @Override
+  public void onShowPress(MotionEvent motionEvent) {
+    Toast.makeText(
+            CameraActivity.this,
+            "onShowPress",
+            Toast.LENGTH_LONG)
+            .show();
+    processImage();
+  }
+
+  @Override
+  public boolean onSingleTapUp(MotionEvent motionEvent) {
+    Toast.makeText(
+            CameraActivity.this,
+            "onSingleTapUp",
+            Toast.LENGTH_LONG)
+            .show();
+    processImage();
+    return true;
+  }
+
+  @Override
+  public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+    return false;
+  }
+
+  @Override
+  public void onLongPress(MotionEvent motionEvent) {
+
+  }
+
+  @Override
+  public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+    if(e2.getY()<e1.getY())
+    {
+      // tts.stop();
+      //cameraSource.stop();
+
+      // vibratePulse();
+
+      //tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
+
+      Intent intent = new Intent(CameraActivity.this, FrontPage.class);
+      startActivity(intent);
+
+    }
+
+    return false;
+  }
+
 
   protected int getLuminanceStride() {
     return yRowStride;
@@ -308,14 +375,12 @@ public abstract class CameraActivity extends AppCompatActivity
 
 
 
-      mButtonDetect.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-          Toast.makeText(CameraActivity.this, "Button is working", Toast.LENGTH_SHORT).show();
-          processImage();
-        }
-      });
+//      mButtonDetect.setOnClickListener(new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//         // processImage();
+//        }
+//      });
 
     } catch (final Exception e) {
       LOGGER.e(e, "Exception!");

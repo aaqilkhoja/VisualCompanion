@@ -106,8 +106,7 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
             @Override
             public boolean onLongClick(View v) {
                 v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(FrontPage.this, CurrencyDetection.class));
+                startActivity(new Intent(FrontPage.this, CurrencyDetectionTwo.class));
                 return true;
             }
         });
@@ -127,7 +126,6 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
             @Override
             public boolean onLongClick(View v) {
 
-                Toast.makeText(FrontPage.this, "Long press clicked", Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(FrontPage.this, MainActivity.class);
                 startActivity(intent);
@@ -151,7 +149,7 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
             @Override
             public boolean onLongClick(View v) {
                 startActivity(new Intent(FrontPage.this, DetectorActivity.class));
-                Toast.makeText(FrontPage.this, "Object long press clicked", Toast.LENGTH_LONG).show();
+                //Toast.makeText(FrontPage.this, "Object long press clicked", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -170,7 +168,7 @@ public class FrontPage extends AppCompatActivity implements View.OnTouchListener
             @Override
             public boolean onLongClick(View v) {
                 vibrateNow(1000);
-                Toast.makeText(FrontPage.this, "Introduction Button Clicked", Toast.LENGTH_LONG).show();
+                //Toast.makeText(FrontPage.this, "Introduction Button Clicked", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(FrontPage.this, WelcomePage.class));
                 return true;
             }

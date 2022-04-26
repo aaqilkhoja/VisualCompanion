@@ -166,48 +166,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         });
 
-        //end of camera builder
-
-        //   button1.setOnClickListener(new View.OnClickListener() {
-        //      @Override
-        //    public void onClick(View v) {
-
-        //    cameraView.getHolder().addCallback(new SurfaceHolder.Callback() {
-        //          @Override
-        //            public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        //                  try{
-        //                        if(ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
-        //                              ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA},RequestCameraPermission);
-//                            }
-
-        //                          cameraSource.start(cameraView.getHolder());
-//
-        //                      }catch (IOException e){
-//
-        //                          e.printStackTrace();
-//
-//
-//
-
-
-
-
-        //                    }
-        //                  }
-//
-        //                @Override
-        //                  public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-//
-        //                  }
-//
-        //         @Override
-        //           public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-
-        //         cameraSource.stop();
-        //       }
-        //     });
-
-
         txtRecognizer.setProcessor(new Detector.Processor<TextBlock>() {
             @Override
             public void release() {
@@ -319,22 +277,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             tts.stop();
             cameraSource.stop();
 
-           vibratePulse();
+            vibratePulse();
 
             tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
 
             Intent intent = new Intent(MainActivity.this, FrontPage.class);
-              startActivity(intent);
-
+            startActivity(intent);
         }
-
         return false;
     }
+
     @Override
     public void onBackPressed(){
         tts.stop();
         cameraSource.stop();
-       vibratePulse();
+        vibratePulse();
         tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
         this.finish();
     }

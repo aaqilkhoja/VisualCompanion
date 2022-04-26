@@ -16,6 +16,7 @@
 
 package com.example.ocrtexttospeech.objectDetection;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -31,10 +32,16 @@ import android.os.SystemClock;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
+import com.example.ocrtexttospeech.FrontPage;
+import com.example.ocrtexttospeech.MainActivity;
 import com.example.ocrtexttospeech.R;
 import com.example.ocrtexttospeech.objectDetection.customview.OverlayView;
 import com.example.ocrtexttospeech.objectDetection.customview.OverlayView.DrawCallback;
@@ -47,19 +54,20 @@ import org.tensorflow.lite.examples.detection.tflite.TFLiteObjectDetectionAPIMod
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
  * objects.
  */
-public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
+public class DetectorActivity extends CameraActivity implements OnImageAvailableListener,  GestureDetector.OnGestureListener  {
   private static final Logger LOGGER = new Logger();
 
   // Configuration values for the prepackaged SSD model.
   private static final int TF_OD_API_INPUT_SIZE = 300;
   private static final boolean TF_OD_API_IS_QUANTIZED = true;
   private static final String TF_OD_API_MODEL_FILE = "detect.tflite";
-  private static final String TF_OD_API_LABELS_FILE = "labelmap.txt";
+  private static final String TF_OD_API_LABELS_FILE = "labels.txt";
   private static final DetectorMode MODE = DetectorMode.TF_OD_API;
   // Minimum detection confidence to track a detection.
   private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
@@ -71,6 +79,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private Integer sensorOrientation;
 
   private Detector detector;
+
+  TextToSpeech tts;
+
 
   private long lastProcessingTimeMs;
   private Bitmap rgbFrameBitmap = null;
@@ -88,6 +99,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   private BorderedText borderedText;
 
+  private GestureDetector gDetector;
+
+
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
     final float textSizePx =
@@ -97,6 +111,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     borderedText.setTypeface(Typeface.MONOSPACE);
 
     tracker = new MultiBoxTracker(this);
+
 
     int cropSize = TF_OD_API_INPUT_SIZE;
 
@@ -118,6 +133,21 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       toast.show();
       finish();
     }
+
+    TextToSpeech.OnInitListener listener =
+            new TextToSpeech.OnInitListener() {
+              @Override
+              public void onInit(final int status) {
+                if(status==TextToSpeech.SUCCESS) {
+                  Log.d("TTS", "Text to Speech Engine started successfully.");
+                  tts.setLanguage(Locale.US);
+                }else{
+                  Log.d("TTS", "Error starting text to speech engine.");
+                }
+              }
+            };
+    tts = new TextToSpeech(this.getApplicationContext(),listener);
+
 
     previewWidth = size.getWidth();
     previewHeight = size.getHeight();
@@ -237,6 +267,58 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         });
   }
 
+
+  @Override
+  public boolean onDown(MotionEvent motionEvent) {
+    return false;
+  }
+
+//  @Override
+//  public boolean onTouch(View v, MotionEvent event) {
+//    gDetector.onTouchEvent(event);
+//    return true;
+//  }
+
+  @Override
+  public void onShowPress(MotionEvent motionEvent) {
+
+  }
+
+  @Override
+  public boolean onSingleTapUp(MotionEvent motionEvent) {
+    processImage();
+    return false;
+  }
+
+  @Override
+  public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+    return false;
+  }
+
+  @Override
+  public void onLongPress(MotionEvent motionEvent) {
+
+  }
+
+  @Override
+  public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+    if(e2.getY()<e1.getY())
+    {
+     // tts.stop();
+      //cameraSource.stop();
+
+     // vibratePulse();
+
+      tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
+
+      Intent intent = new Intent(DetectorActivity.this, FrontPage.class);
+      startActivity(intent);
+
+    }
+
+    return false;
+  }
+
   @Override
   protected int getLayoutId() {
     return R.layout.tfe_od_camera_connection_fragment_tracking;
@@ -245,6 +327,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   @Override
   protected Size getDesiredPreviewFrameSize() {
     return DESIRED_PREVIEW_SIZE;
+  }
+
+  @Override
+  public boolean onTouch(View view, MotionEvent motionEvent) {
+    return false;
   }
 
   // Which detection model to use: by default uses Tensorflow Object Detection API frozen
@@ -295,10 +382,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   @Override
   public void onBackPressed(){
-  //  tts.stop();
-    // cameraSource.stop();
     vibratePulse();
-  //  tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
+    tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
     this.finish();
   }
 }
