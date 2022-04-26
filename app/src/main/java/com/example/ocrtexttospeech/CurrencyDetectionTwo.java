@@ -26,7 +26,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.example.ocrtexttospeech.ml.ModelUnquant;
+import com.example.ocrtexttospeech.ml.ModelUnquant3;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.text.TextRecognizer;
 
@@ -177,7 +177,7 @@ public class CurrencyDetectionTwo extends AppCompatActivity implements View.OnTo
     @SuppressLint("DefaultLocale")
     public void classifyImage(Bitmap image) {
         try {
-            ModelUnquant model = ModelUnquant.newInstance(getApplicationContext());
+            ModelUnquant3 model = ModelUnquant3.newInstance(getApplicationContext());
 
             // Creates inputs for reference.
             TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
@@ -202,7 +202,7 @@ public class CurrencyDetectionTwo extends AppCompatActivity implements View.OnTo
             inputFeature0.loadBuffer(byteBuffer);
 
             // Runs model inference and gets result.
-            ModelUnquant.Outputs outputs = model.process(inputFeature0);
+            ModelUnquant3.Outputs outputs = model.process(inputFeature0);
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidences = outputFeature0.getFloatArray();
