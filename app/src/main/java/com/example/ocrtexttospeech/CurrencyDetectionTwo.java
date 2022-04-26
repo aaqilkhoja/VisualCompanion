@@ -26,7 +26,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.example.ocrtexttospeech.ml.ModelUnquant3;
+import com.example.ocrtexttospeech.ml.ModelUnquant;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.text.TextRecognizer;
 
@@ -178,7 +178,7 @@ public class CurrencyDetectionTwo extends AppCompatActivity implements View.OnTo
     @SuppressLint("DefaultLocale")
     public void classifyImage(Bitmap image) {
         try {
-            ModelUnquant3 model = ModelUnquant3.newInstance(getApplicationContext());
+            ModelUnquant model = ModelUnquant.newInstance(getApplicationContext());
 
             // Creates inputs for reference.
             TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
@@ -203,7 +203,7 @@ public class CurrencyDetectionTwo extends AppCompatActivity implements View.OnTo
             inputFeature0.loadBuffer(byteBuffer);
 
             // Runs model inference and gets result.
-            ModelUnquant3.Outputs outputs = model.process(inputFeature0);
+            ModelUnquant.Outputs outputs = model.process(inputFeature0);
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidences = outputFeature0.getFloatArray();
@@ -218,14 +218,11 @@ public class CurrencyDetectionTwo extends AppCompatActivity implements View.OnTo
 
                 Log.i("CurrencyConfidence:", confidences[i] + ", i=" + i );
             }
-            String finalAnswer;
+            String finalAnswer = "";
             String[] classes = {"Hundred", "Fifty", "Twenty", "Ten", "Five", "Two", "One"};
-            if(maxConfidence > 0.7) {
+            //if(maxConfidence > 0.7) {
                 finalAnswer = classes[maxPos];
-            }
-            else{
-                finalAnswer = "Zero";
-            }
+            //}
 
             System.out.println("Final Answer: " + finalAnswer);
 
