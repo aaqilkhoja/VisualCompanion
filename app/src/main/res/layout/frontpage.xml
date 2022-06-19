@@ -7,16 +7,6 @@
     android:orientation="vertical"
     tools:context=".FrontPage"
     android:id="@+id/swipe_main">
-   <!-- android:id="@+id/swipe_main"-->
-
-
-    <!--TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/-->
-       <!-- android:text="Welcome to Visual Companion. This application is built to help you out with visual impairments. To access the OCR Text to Speech function, swipe left.
-To access object detection, swipe up. To detect currency detection, swipe right. To exit from the app, swipe down."
-        /-->
-
 
 <LinearLayout
     android:layout_width="fill_parent"

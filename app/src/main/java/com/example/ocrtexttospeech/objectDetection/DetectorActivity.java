@@ -41,16 +41,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.ocrtexttospeech.FrontPage;
-import com.example.ocrtexttospeech.MainActivity;
 import com.example.ocrtexttospeech.R;
 import com.example.ocrtexttospeech.objectDetection.customview.OverlayView;
-import com.example.ocrtexttospeech.objectDetection.customview.OverlayView.DrawCallback;
-import com.example.ocrtexttospeech.objectDetection.env.BorderedText;
 import com.example.ocrtexttospeech.objectDetection.env.BorderedText;
 import com.example.ocrtexttospeech.objectDetection.env.ImageUtils;
 import com.example.ocrtexttospeech.objectDetection.env.Logger;
+
 import org.tensorflow.lite.examples.detection.tflite.Detector;
 import org.tensorflow.lite.examples.detection.tflite.TFLiteObjectDetectionAPIModel;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,330 +59,301 @@ import java.util.Locale;
  * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
  * objects.
  */
-public class DetectorActivity extends CameraActivity implements OnImageAvailableListener,  GestureDetector.OnGestureListener  {
-  private static final Logger LOGGER = new Logger();
+public class DetectorActivity extends CameraActivity implements OnImageAvailableListener, GestureDetector.OnGestureListener {
+    private static final Logger LOGGER = new Logger();
 
-  // Configuration values for the prepackaged SSD model.
-  private static final int TF_OD_API_INPUT_SIZE = 300;
-  private static final boolean TF_OD_API_IS_QUANTIZED = true;
-  private static final String TF_OD_API_MODEL_FILE = "detect.tflite";
-  private static final String TF_OD_API_LABELS_FILE = "labels.txt";
-  private static final DetectorMode MODE = DetectorMode.TF_OD_API;
-  // Minimum detection confidence to track a detection.
-  private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
-  private static final boolean MAINTAIN_ASPECT = false;
-  private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
-  private static final boolean SAVE_PREVIEW_BITMAP = false;
-  private static final float TEXT_SIZE_DIP = 10;
-  OverlayView trackingOverlay;
-  private Integer sensorOrientation;
+    // Configuration values for the prepackaged SSD model.
+    private static final int TF_OD_API_INPUT_SIZE = 300;
+    private static final boolean TF_OD_API_IS_QUANTIZED = true;
+    private static final String TF_OD_API_MODEL_FILE = "detect.tflite";
+    private static final String TF_OD_API_LABELS_FILE = "labels.txt";
+    private static final DetectorMode MODE = DetectorMode.TF_OD_API;
 
-  private Detector detector;
+    // Minimum detection confidence to track a detection.
+    private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
+    private static final boolean MAINTAIN_ASPECT = false;
+    private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
+    private static final boolean SAVE_PREVIEW_BITMAP = false;
+    private static final float TEXT_SIZE_DIP = 10;
+    OverlayView trackingOverlay;
+    private Integer sensorOrientation;
 
-  TextToSpeech tts;
+    private Detector detector;
 
-
-  private long lastProcessingTimeMs;
-  private Bitmap rgbFrameBitmap = null;
-  private Bitmap croppedBitmap = null;
-  private Bitmap cropCopyBitmap = null;
-
-  private boolean computingDetection = false;
-
-  private long timestamp = 0;
-
-  private Matrix frameToCropTransform;
-  private Matrix cropToFrameTransform;
-
-  private MultiBoxTracker tracker;
-
-  private BorderedText borderedText;
-
-  private GestureDetector gDetector;
+    TextToSpeech tts;
 
 
-  @Override
-  public void onPreviewSizeChosen(final Size size, final int rotation) {
-    final float textSizePx =
-        TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
-    borderedText = new BorderedText(textSizePx);
-    borderedText.setTypeface(Typeface.MONOSPACE);
+    private long lastProcessingTimeMs;
+    private Bitmap rgbFrameBitmap = null;
+    private Bitmap croppedBitmap = null;
+    private Bitmap cropCopyBitmap = null;
 
-    tracker = new MultiBoxTracker(this);
+    private boolean computingDetection = false;
 
+    private long timestamp = 0;
 
-    int cropSize = TF_OD_API_INPUT_SIZE;
+    private Matrix frameToCropTransform;
+    private Matrix cropToFrameTransform;
 
-    try {
-      detector =
-          TFLiteObjectDetectionAPIModel.create(
-              this,
-              TF_OD_API_MODEL_FILE,
-              TF_OD_API_LABELS_FILE,
-              TF_OD_API_INPUT_SIZE,
-              TF_OD_API_IS_QUANTIZED);
-      cropSize = TF_OD_API_INPUT_SIZE;
-    } catch (final IOException e) {
-      e.printStackTrace();
-      LOGGER.e(e, "Exception initializing Detector!");
-      Toast toast =
-          Toast.makeText(
-              getApplicationContext(), "Detector could not be initialized", Toast.LENGTH_SHORT);
-      toast.show();
-      finish();
-    }
+    private MultiBoxTracker tracker;
+    private BorderedText borderedText;
 
-    TextToSpeech.OnInitListener listener =
-            new TextToSpeech.OnInitListener() {
-              @Override
-              public void onInit(final int status) {
-                if(status==TextToSpeech.SUCCESS) {
-                  Log.d("TTS", "Text to Speech Engine started successfully.");
-                  tts.setLanguage(Locale.US);
-                }else{
-                  Log.d("TTS", "Error starting text to speech engine.");
-                }
-              }
-            };
-    tts = new TextToSpeech(this.getApplicationContext(),listener);
+    @Override
+    public void onPreviewSizeChosen(final Size size, final int rotation) {
+        final float textSizePx =
+                TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
+        borderedText = new BorderedText(textSizePx);
+        borderedText.setTypeface(Typeface.MONOSPACE);
+
+        tracker = new MultiBoxTracker(this);
 
 
-    previewWidth = size.getWidth();
-    previewHeight = size.getHeight();
+        int cropSize = TF_OD_API_INPUT_SIZE;
 
-    sensorOrientation = rotation - getScreenOrientation();
-    LOGGER.i("Camera orientation relative to screen canvas: %d", sensorOrientation);
+        try {
+            detector =
+                    TFLiteObjectDetectionAPIModel.create(
+                            this,
+                            TF_OD_API_MODEL_FILE,
+                            TF_OD_API_LABELS_FILE,
+                            TF_OD_API_INPUT_SIZE,
+                            TF_OD_API_IS_QUANTIZED);
+            cropSize = TF_OD_API_INPUT_SIZE;
+        } catch (final IOException e) {
+            e.printStackTrace();
+            LOGGER.e(e, "Exception initializing Detector!");
+            Toast toast =
+                    Toast.makeText(
+                            getApplicationContext(), "Detector could not be initialized", Toast.LENGTH_SHORT);
+            toast.show();
+            finish();
+        }
 
-    LOGGER.i("Initializing at size %dx%d", previewWidth, previewHeight);
-    rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
-    croppedBitmap = Bitmap.createBitmap(cropSize, cropSize, Config.ARGB_8888);
-
-    frameToCropTransform =
-        ImageUtils.getTransformationMatrix(
-            previewWidth, previewHeight,
-            cropSize, cropSize,
-            sensorOrientation, MAINTAIN_ASPECT);
-
-    cropToFrameTransform = new Matrix();
-    frameToCropTransform.invert(cropToFrameTransform);
-
-    trackingOverlay = (OverlayView) findViewById(R.id.tracking_overlay);
-    trackingOverlay.addCallback(
-        new DrawCallback() {
-          @Override
-          public void drawCallback(final Canvas canvas) {
-            tracker.draw(canvas);
-            if (isDebug()) {
-              tracker.drawDebug(canvas);
-            }
-          }
-        });
-
-    tracker.setFrameConfiguration(previewWidth, previewHeight, sensorOrientation);
-  }
-
-  @Override
-  protected void processImage() {
-    ++timestamp;
-    final long currTimestamp = timestamp;
-    trackingOverlay.postInvalidate();
-
-    // No mutex needed as this method is not reentrant.
-    if (computingDetection) {
-      readyForNextImage();
-      return;
-    }
-    computingDetection = true;
-    LOGGER.i("Preparing image " + currTimestamp + " for detection in bg thread.");
-
-    rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
-
-    readyForNextImage();
-
-    final Canvas canvas = new Canvas(croppedBitmap);
-    canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
-    // For examining the actual TF input.
-    if (SAVE_PREVIEW_BITMAP) {
-      ImageUtils.saveBitmap(croppedBitmap);
-    }
-
-    runInBackground(
-        new Runnable() {
-          @Override
-          public void run() {
-            vibrateNow(1000);
-            LOGGER.i("Running detection on image " + currTimestamp);
-            final long startTime = SystemClock.uptimeMillis();
-            final List<Detector.Recognition> results = detector.recognizeImage(croppedBitmap);
-            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
-
-            cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
-            final Canvas canvas = new Canvas(cropCopyBitmap);
-            final Paint paint = new Paint();
-            paint.setColor(Color.RED);
-            paint.setStyle(Style.STROKE);
-            paint.setStrokeWidth(2.0f);
-
-            float minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
-            switch (MODE) {
-              case TF_OD_API:
-                minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
-                break;
-            }
-
-            final List<Detector.Recognition> mappedRecognitions =
-                new ArrayList<Detector.Recognition>();
-
-            for (final Detector.Recognition result : results) {
-              final RectF location = result.getLocation();
-              if (location != null && result.getConfidence() >= minimumConfidence) {
-                canvas.drawRect(location, paint);
-
-                cropToFrameTransform.mapRect(location);
-
-                result.setLocation(location);
-                mappedRecognitions.add(result);
-              }
-            }
+        TextToSpeech.OnInitListener listener =
+                status -> {
+                    if (status == TextToSpeech.SUCCESS) {
+                        Log.d("TTS", "Text to Speech Engine started successfully.");
+                        tts.setLanguage(Locale.US);
+                    } else {
+                        Log.d("TTS", "Error starting text to speech engine.");
+                    }
+                };
+        tts = new TextToSpeech(this.getApplicationContext(), listener);
 
 
-            // Drawing overlay being called.
-            tracker.trackResults(mappedRecognitions, currTimestamp);
-            trackingOverlay.postInvalidate();
+        previewWidth = size.getWidth();
+        previewHeight = size.getHeight();
 
-            computingDetection = false;
+        sensorOrientation = rotation - getScreenOrientation();
+        LOGGER.i("Camera orientation relative to screen canvas: %d", sensorOrientation);
 
-            runOnUiThread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    showFrameInfo(previewWidth + "x" + previewHeight);
-                    showCropInfo(cropCopyBitmap.getWidth() + "x" + cropCopyBitmap.getHeight());
-                    showInference(lastProcessingTimeMs + "ms");
-                  }
+        LOGGER.i("Initializing at size %dx%d", previewWidth, previewHeight);
+        rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
+        croppedBitmap = Bitmap.createBitmap(cropSize, cropSize, Config.ARGB_8888);
+
+        frameToCropTransform =
+                ImageUtils.getTransformationMatrix(
+                        previewWidth, previewHeight,
+                        cropSize, cropSize,
+                        sensorOrientation, MAINTAIN_ASPECT);
+
+        cropToFrameTransform = new Matrix();
+        frameToCropTransform.invert(cropToFrameTransform);
+
+        trackingOverlay = findViewById(R.id.tracking_overlay);
+        trackingOverlay.addCallback(
+                canvas -> {
+                    tracker.draw(canvas);
+                    if (isDebug()) {
+                        tracker.drawDebug(canvas);
+                    }
                 });
-          }
-        });
-  }
 
-
-  @Override
-  public boolean onDown(MotionEvent motionEvent) {
-    return false;
-  }
-
-//  @Override
-//  public boolean onTouch(View v, MotionEvent event) {
-//    gDetector.onTouchEvent(event);
-//    return true;
-//  }
-
-  @Override
-  public void onShowPress(MotionEvent motionEvent) {
-
-  }
-
-  @Override
-  public boolean onSingleTapUp(MotionEvent motionEvent) {
-    processImage();
-    return false;
-  }
-
-  @Override
-  public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-    return false;
-  }
-
-  @Override
-  public void onLongPress(MotionEvent motionEvent) {
-
-  }
-
-  @Override
-  public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-    if(e2.getY()<e1.getY())
-    {
-     // tts.stop();
-      //cameraSource.stop();
-
-     // vibratePulse();
-
-      tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
-
-      Intent intent = new Intent(DetectorActivity.this, FrontPage.class);
-      startActivity(intent);
-
+        tracker.setFrameConfiguration(previewWidth, previewHeight, sensorOrientation);
     }
 
-    return false;
-  }
+    @Override
+    protected void processImage() {
+        ++timestamp;
+        final long currTimestamp = timestamp;
+        trackingOverlay.postInvalidate();
 
-  @Override
-  protected int getLayoutId() {
-    return R.layout.tfe_od_camera_connection_fragment_tracking;
-  }
+        // No mutex needed as this method is not reentrant.
+        if (computingDetection) {
+            readyForNextImage();
+            return;
+        }
+        computingDetection = true;
+        LOGGER.i("Preparing image " + currTimestamp + " for detection in bg thread.");
 
-  @Override
-  protected Size getDesiredPreviewFrameSize() {
-    return DESIRED_PREVIEW_SIZE;
-  }
+        rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
 
-  @Override
-  public boolean onTouch(View view, MotionEvent motionEvent) {
-    return false;
-  }
+        readyForNextImage();
 
-  // Which detection model to use: by default uses Tensorflow Object Detection API frozen
-  // checkpoints.
-  private enum DetectorMode {
-    TF_OD_API;
-  }
+        final Canvas canvas = new Canvas(croppedBitmap);
+        canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
+        // For examining the actual TF input.
+        if (SAVE_PREVIEW_BITMAP) {
+            ImageUtils.saveBitmap(croppedBitmap);
+        }
 
-  @Override
-  protected void setUseNNAPI(final boolean isChecked) {
-    runInBackground(
-        () -> {
-          try {
-            detector.setUseNNAPI(isChecked);
-          } catch (UnsupportedOperationException e) {
-            LOGGER.e(e, "Failed to set \"Use NNAPI\".");
-            runOnUiThread(
+        runInBackground(
                 () -> {
-                  Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    vibrateNow(1000);
+                    LOGGER.i("Running detection on image " + currTimestamp);
+                    final long startTime = SystemClock.uptimeMillis();
+                    final List<Detector.Recognition> results = detector.recognizeImage(croppedBitmap);
+                    lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
+
+                    cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
+                    final Canvas canvas1 = new Canvas(cropCopyBitmap);
+                    final Paint paint = new Paint();
+                    paint.setColor(Color.RED);
+                    paint.setStyle(Style.STROKE);
+                    paint.setStrokeWidth(2.0f);
+
+                    float minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
+                    switch (MODE) {
+                        case TF_OD_API:
+                            minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
+                            break;
+                    }
+
+                    final List<Detector.Recognition> mappedRecognitions =
+                            new ArrayList<Detector.Recognition>();
+
+                    for (final Detector.Recognition result : results) {
+                        final RectF location = result.getLocation();
+                        if (location != null && result.getConfidence() >= minimumConfidence) {
+                            canvas1.drawRect(location, paint);
+
+                            cropToFrameTransform.mapRect(location);
+
+                            result.setLocation(location);
+                            mappedRecognitions.add(result);
+                        }
+                    }
+
+
+                    // Drawing overlay being called.
+                    tracker.trackResults(mappedRecognitions, currTimestamp);
+                    trackingOverlay.postInvalidate();
+
+                    computingDetection = false;
+
+                    runOnUiThread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    showFrameInfo(previewWidth + "x" + previewHeight);
+                                    showCropInfo(cropCopyBitmap.getWidth() + "x" + cropCopyBitmap.getHeight());
+                                    showInference(lastProcessingTimeMs + "ms");
+                                }
+                            });
                 });
-          }
-        });
-  }
-
-  @Override
-  protected void setNumThreads(final int numThreads) {
-    runInBackground(() -> detector.setNumThreads(numThreads));
-  }
-
-  public void vibratePulse(){
-    long [] pattern = {0,100,200,100,200,100};
-    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-      ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(pattern, VibrationEffect.DEFAULT_AMPLITUDE));
     }
-    else{
-      ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(pattern,-1);
-    }
-  }
 
-  public void vibrateNow(long millis){
-    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-      ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE));
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return false;
     }
-    else{
-      ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(millis);
-    }
-  }
 
-  @Override
-  public void onBackPressed(){
-    vibratePulse();
-    tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
-    this.finish();
-  }
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        processImage();
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        if (e2.getY() < e1.getY()) {
+            tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
+            Intent intent = new Intent(DetectorActivity.this, FrontPage.class);
+            startActivity(intent);
+        }
+
+        return false;
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.tfe_od_camera_connection_fragment_tracking;
+    }
+
+    @Override
+    protected Size getDesiredPreviewFrameSize() {
+        return DESIRED_PREVIEW_SIZE;
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        return false;
+    }
+
+    // Which detection model to use: by default uses Tensorflow Object Detection API frozen
+    // checkpoints.
+    private enum DetectorMode {
+        TF_OD_API;
+    }
+
+    @Override
+    protected void setUseNNAPI(final boolean isChecked) {
+        runInBackground(
+                () -> {
+                    try {
+                        detector.setUseNNAPI(isChecked);
+                    } catch (UnsupportedOperationException e) {
+                        LOGGER.e(e, "Failed to set \"Use NNAPI\".");
+                        runOnUiThread(
+                                () -> {
+                                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                });
+                    }
+                });
+    }
+
+    @Override
+    protected void setNumThreads(final int numThreads) {
+        runInBackground(() -> detector.setNumThreads(numThreads));
+    }
+
+    public void vibratePulse() {
+        long[] pattern = {0, 100, 200, 100, 200, 100};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(pattern, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(pattern, -1);
+        }
+    }
+
+    public void vibrateNow(long millis) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(millis);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        vibratePulse();
+        tts.speak("Back to the Front Page", TextToSpeech.QUEUE_FLUSH, null, null);
+        this.finish();
+    }
 }

@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,15 +26,12 @@ public class LastFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         TextToSpeech.OnInitListener listener =
-                new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(final int status) {
-                        if (status == TextToSpeech.SUCCESS) {
-                            Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
-                            tts.setLanguage(Locale.US);
-                        } else {
-                            Log.d("TTS Intro Page", "Error starting text to speech engine.");
-                        }
+                status -> {
+                    if (status == TextToSpeech.SUCCESS) {
+                        Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
+                        tts.setLanguage(Locale.US);
+                    } else {
+                        Log.d("TTS Intro Page", "Error starting text to speech engine.");
                     }
                 };
 
@@ -77,12 +73,7 @@ public class LastFragment extends Fragment {
         tvInstructions.setText(R.string.last_page_intro_instructions);
 
         LinearLayout finish_button = view.findViewById(R.id.finish);
-        finish_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), FrontPage.class));
-            }
-        });
+        finish_button.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), FrontPage.class)));
 
         return view;
     }

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class FragmentPageAdapter extends FragmentStateAdapter {
 
+    //Array of introduction pages
     private ArrayList<Fragment> fragmentList = new ArrayList<>();
 
     public FragmentPageAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {

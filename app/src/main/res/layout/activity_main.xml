@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_main"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context=".MainActivity"
-    android:id="@+id/layout_main"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
     <SurfaceView
         android:id="@+id/surfaceView"
@@ -32,28 +32,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/surfaceView"
         tools:ignore="MissingConstraints" />
-
-    <!--Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="316dp"
-        tools:layout_editor_absoluteY="574dp"
-        android:id="@+id/buttonForText"
-        tools:ignore="MissingConstraints"
-        android:text="start"/-->
-
-    <!--Button
-        android:id="@+id/stop_button"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
-
-        android:text="Stop"
-        android:backgroundTint="#80FFFFFF"
-
-
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="103dp" /-->
-
 </LinearLayout>

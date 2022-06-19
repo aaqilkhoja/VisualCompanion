@@ -23,15 +23,12 @@ public class ThirdFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         TextToSpeech.OnInitListener listener =
-                new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(final int status) {
-                        if(status==TextToSpeech.SUCCESS) {
-                            Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
-                            tts.setLanguage(Locale.US);
-                        }else{
-                            Log.d("TTS Intro Page", "Error starting text to speech engine.");
-                        }
+                status -> {
+                    if (status == TextToSpeech.SUCCESS) {
+                        Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
+                        tts.setLanguage(Locale.US);
+                    } else {
+                        Log.d("TTS Intro Page", "Error starting text to speech engine.");
                     }
                 };
 
@@ -45,9 +42,9 @@ public class ThirdFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if(this.isVisible())
+        if (this.isVisible())
             tts.speak(getString(R.string.ocr_intro_page_instructions), TextToSpeech.QUEUE_ADD, null, null);
-        else{
+        else {
             tts.stop();
         }
     }
@@ -62,8 +59,7 @@ public class ThirdFragment extends Fragment {
     public View onCreateView(
             LayoutInflater inflater,
             ViewGroup container,
-            Bundle savedInstanceState)
-    {
+            Bundle savedInstanceState) {
 
         View view = inflater
                 .inflate(

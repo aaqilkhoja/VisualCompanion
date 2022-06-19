@@ -1,16 +1,14 @@
 package com.example.ocrtexttospeech.welcome;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.ocrtexttospeech.R;
 
@@ -31,22 +29,16 @@ public class SecondFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         TextToSpeech.OnInitListener listener =
-                new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(final int status) {
-                        if(status==TextToSpeech.SUCCESS) {
-                            Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
-                            tts.setLanguage(Locale.US);
-                        }else{
-                            Log.d("TTS Intro Page", "Error starting text to speech engine.");
-                        }
+                status -> {
+                    if (status == TextToSpeech.SUCCESS) {
+                        Log.d("TTS Intro Page", "Text to Speech Engine started successfully.");
+                        tts.setLanguage(Locale.US);
+                    } else {
+                        Log.d("TTS Intro Page", "Error starting text to speech engine.");
                     }
                 };
 
         tts = new TextToSpeech(getActivity(), listener);
-
-        tts.speak("Welc" +
-                "", TextToSpeech.QUEUE_ADD, null, null);
     }
 
 
@@ -54,9 +46,9 @@ public class SecondFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if(this.isVisible())
+        if (this.isVisible())
             tts.speak(getString(R.string.front_page_intro_string), TextToSpeech.QUEUE_ADD, null, null);
-        else{
+        else {
             tts.stop();
         }
     }
@@ -71,8 +63,7 @@ public class SecondFragment extends Fragment {
     public View onCreateView(
             LayoutInflater inflater,
             ViewGroup container,
-            Bundle savedInstanceState)
-    {
+            Bundle savedInstanceState) {
         View view = inflater
                 .inflate(
                         R.layout.fragment_first,

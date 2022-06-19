@@ -9,8 +9,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="32sp"
-        android:text="@string/thirdPage" />
+        android:text="@string/thirdPage"
+        android:textSize="32sp" />
 
     <Button
         android:id="@+id/finish"

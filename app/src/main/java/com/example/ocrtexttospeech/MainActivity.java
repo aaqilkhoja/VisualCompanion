@@ -1,9 +1,5 @@
 package com.example.ocrtexttospeech;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -23,7 +19,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
@@ -39,11 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     TextView textView;
     CameraSource cameraSource;
     TextToSpeech tts;
-    Button button1;
-    Button button_stop;
     String sentence;
-   // private Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-
 
     final int RequestCameraPermission = 1001;
     private GestureDetector gDetector;
@@ -73,59 +68,26 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         vibrateNow(1000);
-        gDetector = new GestureDetector(this,this);
+        gDetector = new GestureDetector(this, this);
 
         cameraView = findViewById(R.id.surfaceView);
         textView = findViewById(R.id.text_View);
 
         View linearLayoutTouch = (LinearLayout) findViewById(R.id.layout_main);
 
-
-        linearLayoutTouch.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return false;
-            }
-        });
-
-
-       // TextToSpeech tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-         //   @Override
-           // public void onInit(int status) {
-
-          //  }
-        //});
-
-
         TextToSpeech.OnInitListener listener =
-              new TextToSpeech.OnInitListener() {
-        @Override
-          public void onInit(final int status) {
-            if(status==TextToSpeech.SUCCESS) {
-              Log.d("TTS", "Text to Speech Engine started successfully.");
-            tts.setLanguage(Locale.US);
-         }else{
-               Log.d("TTS", "Error starting text to speech engine.");
-                }
-          }
-          };
-         tts = new TextToSpeech(this.getApplicationContext(),listener);
-
-
-        //using getApplicationContext instead of getContext. Don't know if that will affect anything while merging.
-
-        // View.getContext(): Returns the context the view is currently running in. Usually the currently active Activity.
-        // Activity.getApplicationContext(): Returns the context for the entire application (the process all the Activities are running inside of).
-        // Use this instead of the current Activity context if you need a context tied to the lifecycle of the entire application, not just the current Activity.
-
+                status -> {
+                    if (status == TextToSpeech.SUCCESS) {
+                        Log.d("TTS", "Text to Speech Engine started successfully.");
+                        tts.setLanguage(Locale.US);
+                    } else {
+                        Log.d("TTS", "Error starting text to speech engine.");
+                    }
+                };
+        tts = new TextToSpeech(this.getApplicationContext(), listener);
 
         final TextRecognizer txtRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
 
-        //    if (!txtRecognizer.isOperational()){
-        //      Log.w("MainActivity","Detected dependencies not found");
-        // }else
-
-        //{
 
         //start of camera builder
 
@@ -185,45 +147,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         sb.append("\n");
 
                     }
-                    textView.post(new Runnable() {
-                        @Override
-                        public void run() {
-
-
-                            textView.setText(sb.toString());
-                            sentence = sb.toString();
-                            //tts.speak(sb.toString(), TextToSpeech.QUEUE_FLUSH,null,null);
-                            //cameraSource.release();
-
-                        }
+                    textView.post(() -> {
+                        textView.setText(sb.toString());
+                        sentence = sb.toString();
                     });
                 }
             }
         });
 
-
-//});
-        linearLayoutTouch.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-               // gDetector.onTouchEvent()
-                tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, null);
-                gDetector.onTouchEvent(event);
-                return true;
-            }
+        linearLayoutTouch.setOnTouchListener((v, event) -> {
+            // gDetector.onTouchEvent()
+            tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, null);
+            gDetector.onTouchEvent(event);
+            return true;
         });
-
-      //  button_stop.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-          //  public void onClick(View v) {
-                //  cameraSource.release();
-            //    tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, null);
-
-           // }
-       // });
-
-
-        //  }
 
     }
 
@@ -255,25 +192,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @Override
     public void onLongPress(MotionEvent e) {
-        //TextToSpeech tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-          //  @Override
-           // public void onInit(int status) {
-
-          //  }
-        //});
-        Toast.makeText(MainActivity.this, "Long Press", Toast.LENGTH_SHORT);
-
-        //Intent intent = new Intent(MainActivity.this, FrontPage.class);
-       // tts.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, null);
-
-
-        //  startActivity(intent);
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        if(e2.getY()<e1.getY())
-        {
+        if (e2.getY() < e1.getY()) {
             tts.stop();
             cameraSource.stop();
 
@@ -288,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         tts.stop();
         cameraSource.stop();
         vibratePulse();
@@ -296,21 +219,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         this.finish();
     }
 
-    public void vibratePulse(){
-        long [] pattern = {0,100,200,100,200,100};
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+    public void vibratePulse() {
+        long[] pattern = {0, 100, 200, 100, 200, 100};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(pattern, VibrationEffect.DEFAULT_AMPLITUDE));
-        }
-        else{
-            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(pattern,-1);
+        } else {
+            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(pattern, -1);
         }
     }
 
-    public void vibrateNow(long millis){
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+    //Function to provide
+    public void vibrateNow(long millis) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE));
-        }
-        else{
+        } else {
             ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(millis);
         }
     }

@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="32sp"
-        android:text="@string/secondPage" />
+        android:text="@string/secondPage"
+        android:textSize="32sp" />
 
 </RelativeLayout>
